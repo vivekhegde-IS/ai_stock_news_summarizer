@@ -9,20 +9,24 @@ from config import POLYGON_API_KEY, GEMINI_API_KEY
 
 # --- Helper Functions (Our existing scrapers) ---
 
-# This is a powerful Streamlit feature that caches the output of our functions.
-# It prevents re-running a function if we use the same ticker again,
-# which saves a lot of time and API calls.
 @st.cache_data
 def scrape_tradingview(ticker):
     """Scrapes news headlines and returns them as a list."""
     st.write(f"Scraping TradingView for {ticker}...")
     headlines_list = []
-    driver_path = './chromedriver.exe'
+    
+    # --- UPDATED CODE FOR STREAMLIT CLOUD ---
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--log-level=3')
-    service = Service(executable_path=driver_path)
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    
+    # Use Selenium's built-in manager to automatically find the driver
+    service = Service() 
     driver = webdriver.Chrome(service=service, options=options)
+    # --- END UPDATED CODE ---
+
     url = f'https://in.tradingview.com/symbols/NYSE-{ticker}/news/'
     try:
         driver.get(url)
@@ -103,11 +107,10 @@ def get_ai_summary(all_headlines, ticker):
     except Exception as e:
         error_message = f"An error occurred with the AI model API call: {e}"
         try:
-            # Try to get more detailed error from API response
             error_details = response.json()
             error_message += f"\nDetails: {error_details.get('error', {}).get('message', 'No details')}"
         except:
-            pass # Ignore if response is not valid JSON
+            pass
         st.error(error_message)
         return None
 
@@ -115,37 +118,28 @@ def get_ai_summary(all_headlines, ticker):
 # --- Streamlit App UI ---
 
 st.set_page_config(layout="wide", page_title="AI Stock News Summarizer")
-
 st.title("📈 AI Stock News Summarizer")
 
-# --- Sidebar for Ticker Input ---
 with st.sidebar:
     st.header("Stock Ticker")
     ticker = st.text_input("Enter a stock ticker (e.g., AAPL, MSFT, UPS):", "UPS").upper()
-    
     analyze_button = st.button("Analyze News")
-
-# --- Main Content Area ---
 
 if analyze_button:
     if not ticker:
         st.warning("Please enter a stock ticker.")
     else:
         st.header(f"Daily Summary for {ticker}")
-        
         with st.spinner(f"Gathering news and generating summary for {ticker}..."):
-            # 1. Collect all headlines
             all_headlines = []
             all_headlines.extend(scrape_tradingview(ticker))
             all_headlines.extend(scrape_finviz(ticker))
             all_headlines.extend(scrape_polygon(ticker))
             
-            # 2. Get the AI summary
             if all_headlines:
                 summary = get_ai_summary(all_headlines, ticker)
                 if summary:
                     st.markdown(summary)
-                    
                 with st.expander("View Raw Headlines Collected"):
                     st.json(list(set(all_headlines)))
             else:
