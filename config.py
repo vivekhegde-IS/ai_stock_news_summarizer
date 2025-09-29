@@ -1,3 +1,3 @@
 # Inside config.py
-GEMINI_API_KEY = "AIzaSyAZQ0DRGuut3lx8012TsdDINF0eGjM3ySE"
+GEMINI_API_KEY = "AIzaSyAQjPCv-zXywPTd5mVfeqMXjdYe0DImi50"
 POLYGON_API_KEY = "iNpbhWy5OUZoCPldkmdIMeg4iiQZPiGN"
