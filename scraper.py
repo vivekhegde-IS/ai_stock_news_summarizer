@@ -84,7 +84,8 @@ def get_ai_summary(all_headlines, ticker):
     """Sends headlines to Gemini and returns an AI-generated summary."""
     st.write("Asking Gemini for an AI Summary...")
     # Change this line
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+   # Change v1 back to v1beta in this line
+url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
     headers = {'Content-Type': 'application/json'}
     unique_headlines = list(set(all_headlines))
     headlines_text = "\n".join(unique_headlines)
