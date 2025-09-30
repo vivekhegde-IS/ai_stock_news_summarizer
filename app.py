@@ -7,7 +7,8 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
-from config import POLYGON_API_KEY, GEMINI_API_KEY
+POLYGON_API_KEY = st.secrets["POLYGON_API_KEY"]
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 
 # --- Helper Functions ---
 
@@ -82,7 +83,7 @@ def scrape_polygon(ticker):
 def get_ai_summary(all_headlines, ticker):
     """Sends headlines to Gemini and returns an AI-generated summary."""
     st.write("Asking Gemini for an AI Summary...")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
     headers = {'Content-Type': 'application/json'}
     unique_headlines = list(set(all_headlines))
     headlines_text = "\n".join(unique_headlines)
