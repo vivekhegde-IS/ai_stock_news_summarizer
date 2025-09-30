@@ -83,7 +83,7 @@ def scrape_polygon(ticker):
 def get_ai_summary(all_headlines, ticker):
     """Sends headlines to Gemini and returns an AI-generated summary."""
     st.write("Asking Gemini for an AI Summary...")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/models/gemini-2.0-flash-lite:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp:generateContent?key={GEMINI_API_KEY}"
     headers = {'Content-Type': 'application/json'}
     unique_headlines = list(set(all_headlines))
     headlines_text = "\n".join(unique_headlines)
